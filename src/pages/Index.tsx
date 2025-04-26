@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Canvas } from '@/components/Canvas';
+import { CanvasComponent } from '@/components/Canvas';
 import { Toolbar } from '@/components/Toolbar';
 import { SessionPanel } from '@/components/SessionPanel';
 import { Chat } from '@/components/Chat';
@@ -53,7 +53,8 @@ const Index = () => {
   const handleExportPDF = async () => {
     if (!canvasRef.current) return;
     try {
-      await exportToPDF(canvasRef.current);
+      const fabricCanvas = (canvasRef.current as any).getFabricCanvas ? (canvasRef.current as any).getFabricCanvas() : undefined;
+      await exportToPDF(canvasRef.current, fabricCanvas);
       showNotification('Whiteboard exported as PDF');
     } catch (error) {
       showNotification('Failed to export whiteboard');
@@ -113,7 +114,7 @@ const Index = () => {
           {/* Canvas area */}
           <div className="col-12 col-md-9 d-flex align-items-center justify-content-center h-100 overflow-hidden p-2 p-md-4" style={{ minHeight: 0 }}>
             <div className="bg-white w-100 h-100 p-2" style={{ borderRadius: '8px', minHeight: '300px' }}>
-              <Canvas 
+              <CanvasComponent 
                 width={canvasSize.width} 
                 height={canvasSize.height}
                 ref={canvasRef}

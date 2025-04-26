@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useWhiteboard } from '../context/WhiteboardContext';
 import { Button } from '@/components/ui/button';
@@ -16,14 +15,17 @@ export const BrushTypesPicker = () => {
 
   const handleBrushTypeChange = (brushType: string) => {
     if (brushType === 'fill') {
-      dispatch({ type: 'FILL_CANVAS', payload: state.currentColor });
+      dispatch({ type: 'SET_DRAWING_MODE', payload: 'brush' });
+      dispatch({ type: 'SET_BRUSH_TYPE', payload: 'fill' });
+      // Clear active shape if one is selected
+      if (state.activeShape) {
+        dispatch({ type: 'SET_ACTIVE_SHAPE', payload: null });
+      }
       return;
     }
-    
     // Set brush mode (not eraser) when changing brush type
     dispatch({ type: 'SET_DRAWING_MODE', payload: 'brush' });
     dispatch({ type: 'SET_BRUSH_TYPE', payload: brushType });
-    
     // Clear active shape if one is selected
     if (state.activeShape) {
       dispatch({ type: 'SET_ACTIVE_SHAPE', payload: null });
@@ -39,7 +41,7 @@ export const BrushTypesPicker = () => {
               variant={(state.brushType === id && state.drawingMode === 'brush' && !state.activeShape) ? 'default' : 'outline'}
               size="icon"
               onClick={() => handleBrushTypeChange(id)}
-              className="w-8 h-8"
+              className={`w-8 h-8${state.brushType === id && state.drawingMode === 'brush' && !state.activeShape ? ' active' : ''}`}
             >
               <Icon className="h-4 w-4" />
             </Button>

@@ -1,4 +1,5 @@
 import { Point, DrawingOptions, Shape } from "../types/whiteboard";
+import type { Canvas as FabricCanvas } from 'fabric';
 
 export const generateSessionId = (): string => {
   return Math.random().toString(36).substring(2, 9);
@@ -187,7 +188,10 @@ export const exportToImage = (canvas: HTMLCanvasElement): void => {
   link.click();
 };
 
-export const exportToPDF = async (canvas: HTMLCanvasElement): Promise<void> => {
+export const exportToPDF = async (
+  canvas: HTMLCanvasElement,
+  fabricCanvas?: FabricCanvas | null
+): Promise<void> => {
   try {
     const { jsPDF } = await import('jspdf');
     const pdf = new jsPDF({
@@ -195,8 +199,12 @@ export const exportToPDF = async (canvas: HTMLCanvasElement): Promise<void> => {
       unit: 'px',
       format: [canvas.width, canvas.height]
     });
-    
-    const imgData = canvas.toDataURL('image/png', 1.0);
+    let imgData: string;
+    if (fabricCanvas && typeof fabricCanvas.toDataURL === 'function') {
+      imgData = fabricCanvas.toDataURL({ format: 'png', multiplier: 1 });
+    } else {
+      imgData = canvas.toDataURL('image/png', 1.0);
+    }
     pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
     pdf.save(`collaborative-whiteboard-${new Date().toISOString()}.pdf`);
   } catch (error) {

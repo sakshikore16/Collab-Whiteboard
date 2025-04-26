@@ -46,7 +46,7 @@
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
-    "fabricjs": "^1.0.0",
+    "fabric": "^6.6.4",
     "input-otp": "^1.2.4",
     "jspdf": "^3.0.1",
     "keycloak-js": "^26.1.5",
