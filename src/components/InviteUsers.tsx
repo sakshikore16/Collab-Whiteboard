@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { useWhiteboard } from '../context/WhiteboardContext';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/sonner';
 
 export const InviteUsers: React.FC = () => {
@@ -30,11 +28,12 @@ export const InviteUsers: React.FC = () => {
   };
 
   return (
-    <div className="p-4 border-b border-gray-200">
-      <h2 className="text-lg font-semibold mb-4">Invite Users</h2>
-      <div className="flex gap-2 mb-4 items-center h-10">
-        <Input
+    <div>
+      <h2 className="h5 mb-3">Invite Users</h2>
+      <div className="input-group mb-3">
+        <input
           type="email"
+          className="form-control"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter email address"
@@ -44,11 +43,17 @@ export const InviteUsers: React.FC = () => {
             }
           }}
         />
-        <Button onClick={handleInvite}>Invite</Button>
+        <button 
+          className="btn btn-primary" 
+          type="button"
+          onClick={handleInvite}
+        >
+          Invite
+        </button>
       </div>
-      <div className="mt-2">
-        <p className="text-sm text-gray-500 mb-1">Or share this link:</p>
-        <div className="p-2 bg-gray-100 rounded text-sm overflow-x-auto whitespace-nowrap max-w-full border border-gray-200">
+      <div className="mt-3">
+        <p className="small text-muted mb-2">Or share this link:</p>
+        <div className="p-2 bg-light rounded-2 small overflow-auto border">
           {`${window.location.origin}/?session=${state.sessionId}`}
         </div>
       </div>

@@ -124,10 +124,22 @@ export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(({ width, heigh
       const input = document.createElement('input');
       input.type = 'text';
       input.className = 'absolute z-10 p-1 border border-gray-300 rounded';
-      input.style.left = `${e.clientX}px`;
-      input.style.top = `${e.clientY}px`;
+      input.style.width = '120px';
+      input.style.height = '28px';
+      input.style.fontSize = '16px';
       input.style.color = state.currentColor;
-      input.style.fontSize = `${state.brushSize * 8}px`;
+      input.style.background = '#fff';
+      input.style.border = '1px solid #bdbdbd';
+      input.style.padding = '2px 6px';
+      input.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+      const containerRect = canvas.parentElement?.getBoundingClientRect();
+      if (containerRect) {
+        input.style.left = `${e.clientX - containerRect.left}px`;
+        input.style.top = `${e.clientY - containerRect.top}px`;
+      } else {
+        input.style.left = `${e.clientX}px`;
+        input.style.top = `${e.clientY}px`;
+      }
       
       input.onkeydown = (event) => {
         if (event.key === 'Enter') {

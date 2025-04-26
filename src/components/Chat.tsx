@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useWhiteboard } from '../context/WhiteboardContext';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { io, Socket } from 'socket.io-client';
+import { Manager } from 'socket.io-client';
+import type { Socket } from 'socket.io-client';
 
 interface Message {
   id: string;
@@ -25,7 +23,8 @@ export const Chat: React.FC = () => {
   useEffect(() => {
     if (!state.sessionId) return;
     if (!socket) {
-      socket = io(SOCKET_SERVER_URL);
+      const manager = new Manager(SOCKET_SERVER_URL);
+      socket = manager.socket('/');
     }
     socket.emit('join-session', state.sessionId);
     socket.on('chat-message', (message: Message) => {
@@ -58,27 +57,27 @@ export const Chat: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full border-l border-gray-200">
-      <div className="p-4 border-b border-gray-200">
-        <h2 className="text-lg font-semibold">Chat</h2>
+    <div className="d-flex flex-column h-100">
+      <div className="p-3 border-bottom">
+        <h2 className="h5 mb-0">Chat</h2>
       </div>
-      <ScrollArea className="flex-1 p-4 h-56 max-h-56 overflow-y-auto">
-        <div className="space-y-4">
+      <div className="flex-grow-1 overflow-auto p-3">
+        <div className="d-flex flex-column gap-3">
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex flex-col ${
-                message.userId === state.userId ? 'items-end' : 'items-start'
+              className={`d-flex flex-column ${
+                message.userId === state.userId ? 'align-items-end' : 'align-items-start'
               }`}
             >
-              <div className="text-sm text-gray-500">
+              <div className="small text-muted">
                 {message.username}
               </div>
               <div
-                className={`max-w-[80%] p-2 rounded-lg ${
+                className={`rounded-3 p-2 ${
                   message.userId === state.userId
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-100'
+                    ? 'bg-primary text-white'
+                    : 'bg-light'
                 }`}
               >
                 {message.content}
@@ -87,10 +86,12 @@ export const Chat: React.FC = () => {
           ))}
           <div ref={messagesEndRef} />
         </div>
-      </ScrollArea>
-      <div className="p-4 border-t border-gray-200">
-        <div className="flex gap-2">
-          <Input
+      </div>
+      <div className="p-3 border-top">
+        <div className="input-group">
+          <input
+            type="text"
+            className="form-control"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type a message..."
@@ -100,7 +101,13 @@ export const Chat: React.FC = () => {
               }
             }}
           />
-          <Button onClick={handleSendMessage}>Send</Button>
+          <button 
+            className="btn btn-primary" 
+            type="button"
+            onClick={handleSendMessage}
+          >
+            Send
+          </button>
         </div>
       </div>
     </div>

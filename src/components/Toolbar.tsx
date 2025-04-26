@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useWhiteboard } from '../context/WhiteboardContext';
 import { ColorPicker } from './ColorPicker';
@@ -6,9 +5,7 @@ import { BrushSizePicker } from './BrushSizePicker';
 import { BrushTypesPicker } from './BrushTypesPicker';
 import { ShapesPicker } from './ShapesPicker';
 import { ExportOptions } from './ExportOptions';
-import { Button } from '@/components/ui/button';
 import { Eraser, Undo, Redo } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
 
 interface ToolbarProps {
   onExportPNG: () => void;
@@ -41,70 +38,77 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   };
 
   return (
-    <div className="toolbar flex items-center gap-2 p-2 bg-white rounded-lg shadow-lg">
-      <BrushTypesPicker />
-      <Separator orientation="vertical" className="h-6" />
+    <div className="d-flex align-items-center gap-2 bg-white border rounded shadow-sm px-3 py-2 w-100" style={{ minHeight: '48px' }}>
+      <div className="btn-group">
+        <BrushTypesPicker />
+      </div>
       
-      <Button
-        variant={state.drawingMode === 'eraser' && !state.activeShape ? 'default' : 'outline'}
-        size="icon"
-        className="toolbar-item"
+      <div className="vr mx-2"></div>
+      
+      <button
+        type="button"
+        className={`btn ${state.drawingMode === 'eraser' && !state.activeShape ? 'btn-primary' : 'btn-outline-primary'}`}
         onClick={() => handleToolChange('eraser')}
       >
         <Eraser className="h-4 w-4" />
-      </Button>
+      </button>
       
-      <Separator orientation="vertical" className="h-6" />
+      <div className="vr mx-2"></div>
       
-      <ShapesPicker />
+      <div className="btn-group">
+        <ShapesPicker />
+      </div>
       
-      <Separator orientation="vertical" className="h-6" />
+      <div className="vr mx-2"></div>
       
-      <BrushSizePicker />
+      <div className="btn-group">
+        <BrushSizePicker />
+      </div>
       
-      <Separator orientation="vertical" className="h-6" />
+      <div className="vr mx-2"></div>
       
-      <ColorPicker spectrum />
+      <div className="btn-group">
+        <ColorPicker spectrum />
+      </div>
       
-      <Separator orientation="vertical" className="h-6" />
+      <div className="vr mx-2"></div>
       
-      <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="icon"
-          className="toolbar-item"
+      <div className="btn-group">
+        <button
+          type="button"
+          className="btn btn-outline-secondary"
           onClick={handleUndo}
           disabled={state.actions.length === 0}
         >
           <Undo className="h-4 w-4" />
-        </Button>
+        </button>
         
-        <Button
-          variant="outline"
-          size="icon"
-          className="toolbar-item"
+        <button
+          type="button"
+          className="btn btn-outline-secondary"
           onClick={handleRedo}
           disabled={state.redoStack.length === 0}
         >
           <Redo className="h-4 w-4" />
-        </Button>
+        </button>
       </div>
 
-      <Separator orientation="vertical" className="h-6" />
+      <div className="vr mx-2"></div>
       
-      <ExportOptions 
-        onExportPNG={onExportPNG} 
-        onExportPDF={onExportPDF} 
-      />
+      <div className="btn-group">
+        <ExportOptions 
+          onExportPNG={onExportPNG} 
+          onExportPDF={onExportPDF} 
+        />
+      </div>
       
-      <Button 
-        variant="outline" 
-        size="sm" 
-        className="toolbar-item" 
+      <button 
+        type="button"
+        className="btn btn-outline-danger" 
         onClick={onClearCanvas}
       >
         Clear
-      </Button>
+      </button>
     </div>
   );
 };

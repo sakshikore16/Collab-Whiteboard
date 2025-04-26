@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { useWhiteboard } from '../context/WhiteboardContext';
-import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/sonner';
 
 interface ExportVideoProps {
@@ -60,25 +59,28 @@ export const ExportVideo: React.FC<ExportVideoProps> = ({ canvasRef }) => {
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-lg font-semibold mb-4">Export Drawing Process</h2>
-      <div className="flex gap-2">
-        <Button
+    <div>
+      <h2 className="h5 mb-3">Export Drawing Process</h2>
+      <div className="d-flex gap-2">
+        <button
+          type="button"
+          className="btn btn-primary"
           onClick={startRecording}
           disabled={isRecording || isExporting}
         >
           Start Recording
-        </Button>
-        <Button
+        </button>
+        <button
+          type="button"
+          className="btn btn-danger"
           onClick={stopRecording}
           disabled={!isRecording || isExporting}
-          variant="destructive"
         >
           Stop Recording
-        </Button>
+        </button>
       </div>
-      <div className="mt-4">
-        <p className="text-sm text-gray-500">
+      <div className="mt-3">
+        <p className="small text-muted mb-0">
           {isRecording
             ? 'Recording in progress...'
             : isExporting

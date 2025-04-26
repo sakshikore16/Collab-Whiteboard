@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useWhiteboard } from '../context/WhiteboardContext';
 import { Square, Circle, ArrowRight, Text } from 'lucide-react';
@@ -22,16 +21,21 @@ export const ShapesPicker = () => {
     }
     
     dispatch({ type: 'SET_DRAWING_MODE', payload: 'brush' });
-    dispatch({ type: 'SET_ACTIVE_SHAPE', payload: shapeType });
+    dispatch({ type: 'SET_ACTIVE_SHAPE', payload: shapeType as any });
   };
 
   return (
     <div className="flex items-center gap-2">
-      <ToggleGroup type="single" value={state.activeShape || ''} onValueChange={handleShapeSelect}>
+      <ToggleGroup type="single" value={state.activeShape ? String(state.activeShape) : ''} onValueChange={handleShapeSelect}>
         {shapes.map(({ id, icon: Icon, label }) => (
           <Tooltip key={id}>
             <TooltipTrigger asChild>
-              <ToggleGroupItem value={id} aria-label={`Insert ${label}`}>
+              <ToggleGroupItem 
+                value={id} 
+                aria-label={`Insert ${label}`}
+                className={state.activeShape === id ? 'border border-primary border-2 bg-primary bg-opacity-10' : ''}
+                style={state.activeShape === id ? { boxShadow: '0 0 0 2px #0d6efd33' } : {}}
+              >
                 <Icon className="h-4 w-4" />
               </ToggleGroupItem>
             </TooltipTrigger>

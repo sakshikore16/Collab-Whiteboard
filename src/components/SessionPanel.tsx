@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
 import { useWhiteboard } from '../context/WhiteboardContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { 
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import { toast } from '@/components/ui/sonner';
 import { Users } from 'lucide-react';
 
@@ -56,82 +46,102 @@ export const SessionPanel: React.FC = () => {
 
   return (
     <>
-      <Button 
-        variant="outline" 
-        className="flex items-center gap-2" 
+      <button 
+        type="button"
+        className="btn btn-outline-primary d-flex align-items-center gap-2" 
         onClick={() => setIsDialogOpen(true)}
       >
         <Users className="h-4 w-4" />
         {state.sessionId ? 'Session: ' + state.sessionId : 'Join Session'}
-      </Button>
+      </button>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Collaborative Whiteboard Session</DialogTitle>
-            <DialogDescription>Join or create a collaborative whiteboard session</DialogDescription>
-          </DialogHeader>
-          
-          <div className="flex flex-col gap-4 py-4">
-            {state.sessionId ? (
-              <div className="flex flex-col gap-2">
-                <p className="text-sm text-muted-foreground">Current Session ID:</p>
-                <div className="flex gap-2">
-                  <Input
-                    value={state.sessionId}
-                    readOnly
-                    className="font-mono"
-                  />
-                  <Button onClick={copySessionId} className="shrink-0">
-                    Copy
-                  </Button>
+      {isDialogOpen && (
+        <div className="modal show d-block" tabIndex={-1}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Collaborative Whiteboard Session</h5>
+                <button 
+                  type="button" 
+                  className="btn-close" 
+                  onClick={() => setIsDialogOpen(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <div className="d-flex flex-column gap-3">
+                  {state.sessionId ? (
+                    <div className="d-flex flex-column gap-2">
+                      <p className="small text-muted">Current Session ID:</p>
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          className="form-control font-monospace"
+                          value={state.sessionId}
+                          readOnly
+                        />
+                        <button 
+                          type="button"
+                          className="btn btn-outline-secondary" 
+                          onClick={copySessionId}
+                        >
+                          Copy
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="d-flex flex-column gap-2">
+                        <label htmlFor="username" className="form-label">Your Name</label>
+                        <input
+                          type="text"
+                          id="username"
+                          className="form-control"
+                          value={username}
+                          onChange={(e) => setUsername(e.target.value)}
+                          placeholder="Enter your name"
+                        />
+                      </div>
+                      
+                      <div className="d-flex flex-column gap-3">
+                        <button 
+                          type="button"
+                          className="btn btn-primary" 
+                          onClick={handleCreateSession}
+                        >
+                          Create New Session
+                        </button>
+                        
+                        <div className="d-flex align-items-center">
+                          <hr className="flex-grow-1" />
+                          <span className="px-2 small text-muted">Or join existing</span>
+                          <hr className="flex-grow-1" />
+                        </div>
+                        
+                        <form onSubmit={handleJoinSession} className="d-flex flex-column gap-2">
+                          <input
+                            type="text"
+                            className="form-control font-monospace"
+                            value={inputSessionId}
+                            onChange={(e) => setInputSessionId(e.target.value)}
+                            placeholder="Enter Session ID"
+                          />
+                          <button 
+                            type="submit" 
+                            className="btn btn-primary"
+                            disabled={!inputSessionId.trim()}
+                          >
+                            Join Session
+                          </button>
+                        </form>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
-            ) : (
-              <>
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="username" className="text-sm">Your Name</label>
-                  <Input
-                    id="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Enter your name"
-                  />
-                </div>
-                
-                <div className="flex flex-col gap-4">
-                  <Button onClick={handleCreateSession}>
-                    Create New Session
-                  </Button>
-                  
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t" />
-                    </div>
-                    <div className="relative flex justify-center text-xs">
-                      <span className="bg-background px-2 text-muted-foreground">
-                        Or join existing
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <form onSubmit={handleJoinSession} className="flex flex-col gap-2">
-                    <Input
-                      value={inputSessionId}
-                      onChange={(e) => setInputSessionId(e.target.value)}
-                      placeholder="Enter Session ID"
-                      className="font-mono"
-                    />
-                    <Button type="submit" disabled={!inputSessionId.trim()}>
-                      Join Session
-                    </Button>
-                  </form>
-                </div>
-              </>
-            )}
+            </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
     </>
   );
 };

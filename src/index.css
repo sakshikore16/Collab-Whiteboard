@@ -1,3 +1,5 @@
+/* Import Bootstrap styles */
+@import 'bootstrap/dist/css/bootstrap.min.css';
 
 @tailwind base;
 @tailwind components;
@@ -112,4 +114,17 @@
   margin-left: -5px;
   z-index: 90;
   pointer-events: none;
+}
+
+/* Custom styles */
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.font-monospace {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
