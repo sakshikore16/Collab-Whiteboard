@@ -1,12 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { useWhiteboard } from '../context/WhiteboardContext';
-import { toast } from '@/components/ui/sonner';
 
 interface ExportVideoProps {
   canvasRef: React.RefObject<HTMLCanvasElement>;
+  showNotification: (msg: string) => void;
 }
 
-export const ExportVideo: React.FC<ExportVideoProps> = ({ canvasRef }) => {
+export const ExportVideo: React.FC<ExportVideoProps> = ({ canvasRef, showNotification }) => {
   const { state } = useWhiteboard();
   const [isRecording, setIsRecording] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -38,14 +38,15 @@ export const ExportVideo: React.FC<ExportVideoProps> = ({ canvasRef }) => {
         URL.revokeObjectURL(url);
         chunksRef.current = [];
         setIsExporting(false);
+        showNotification('Recording ended! Exporting video...');
       };
 
       mediaRecorderRef.current = mediaRecorder;
       mediaRecorder.start();
       setIsRecording(true);
-      toast.success('Recording started');
+      showNotification('Recording started!');
     } catch (error) {
-      toast.error('Failed to start recording');
+      showNotification('Failed to start recording');
     }
   };
 
@@ -54,7 +55,7 @@ export const ExportVideo: React.FC<ExportVideoProps> = ({ canvasRef }) => {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
       setIsExporting(true);
-      toast.success('Recording stopped, exporting video...');
+      showNotification('Recording stopped, exporting video...');
     }
   };
 

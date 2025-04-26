@@ -3,7 +3,11 @@ import { useWhiteboard } from '../context/WhiteboardContext';
 import { toast } from '@/components/ui/sonner';
 import { Users } from 'lucide-react';
 
-export const SessionPanel: React.FC = () => {
+interface SessionPanelProps {
+  showNotification: (msg: string) => void;
+}
+
+export const SessionPanel: React.FC<SessionPanelProps> = ({ showNotification }) => {
   const { state, createSession, joinSession } = useWhiteboard();
   const [inputSessionId, setInputSessionId] = useState('');
   const [username, setUsername] = useState(state.username);
@@ -11,37 +15,34 @@ export const SessionPanel: React.FC = () => {
 
   const handleCreateSession = () => {
     if (!username.trim()) {
-      toast.error('Please enter your name');
+      showNotification('Please enter your name');
       return;
     }
-    
     createSession(username);
+    showNotification('Session created!');
     setIsDialogOpen(false);
   };
 
   const handleJoinSession = (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!username.trim()) {
-      toast.error('Please enter your name');
+      showNotification('Please enter your name');
       return;
     }
-    
     if (!inputSessionId.trim()) {
-      toast.error('Please enter a session ID');
+      showNotification('Please enter a session ID');
       return;
     }
-    
     joinSession(inputSessionId, username);
+    showNotification('Session joined successfully!');
     setIsDialogOpen(false);
   };
 
   const copySessionId = () => {
     if (!state.sessionId) return;
-    
     navigator.clipboard.writeText(state.sessionId)
-      .then(() => toast.success('Session ID copied to clipboard!'))
-      .catch(() => toast.error('Failed to copy session ID'));
+      .then(() => showNotification('Session ID copied to clipboard!'))
+      .catch(() => showNotification('Failed to copy session ID'));
   };
 
   return (
@@ -57,7 +58,15 @@ export const SessionPanel: React.FC = () => {
 
       {isDialogOpen && (
         <div className="modal show d-block" tabIndex={-1}>
-          <div className="modal-dialog modal-dialog-centered">
+          <div
+            className="modal-dialog modal-dialog-centered w-auto"
+            style={{
+              maxWidth: '400px',
+              width: '95vw',
+              marginLeft: window.innerWidth >= 768 ? '25%' : 'auto', // Moved slightly right!
+              marginRight: window.innerWidth >= 768 ? 'auto' : 'auto',
+            }}
+          >
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Collaborative Whiteboard Session</h5>

@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useWhiteboard } from '../context/WhiteboardContext';
-import { toast } from '@/components/ui/sonner';
 
-export const InviteUsers: React.FC = () => {
+interface InviteUsersProps {
+  showNotification: (msg: string) => void;
+}
+
+export const InviteUsers: React.FC<InviteUsersProps> = ({ showNotification }) => {
   const { state } = useWhiteboard();
   const [email, setEmail] = useState('');
 
@@ -17,14 +20,19 @@ export const InviteUsers: React.FC = () => {
         body: JSON.stringify({ email, link: invitationLink }),
       });
       if (response.ok) {
-        toast.success(`Invitation sent to ${email}`);
+        showNotification(`Invitation sent to ${email}`);
         setEmail('');
       } else {
-        toast.error('Failed to send invitation');
+        showNotification('Failed to send invitation');
       }
     } catch (error) {
-      toast.error('Failed to send invitation');
+      showNotification('Failed to send invitation');
     }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(`${window.location.origin}/?session=${state.sessionId}`);
+    showNotification('Invite link copied to clipboard!');
   };
 
   return (
@@ -53,7 +61,7 @@ export const InviteUsers: React.FC = () => {
       </div>
       <div className="mt-3">
         <p className="small text-muted mb-2">Or share this link:</p>
-        <div className="p-2 bg-light rounded-2 small overflow-auto border">
+        <div className="p-2 bg-light rounded-2 small overflow-auto border" onClick={handleCopy} style={{ cursor: 'pointer' }}>
           {`${window.location.origin}/?session=${state.sessionId}`}
         </div>
       </div>
